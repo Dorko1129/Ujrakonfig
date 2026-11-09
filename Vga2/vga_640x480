@@ -1,0 +1,69 @@
+`timescale 1ns / 1ps
+
+module vga_640x480 (
+    input wire clk,
+    input wire clr,
+    output reg hsync,
+    output reg vsync,
+    output reg [9:0] hc,
+    output reg [9:0] vc,
+    output reg vidon
+);
+
+    parameter hpixels = 10'd800;
+    parameter vlines  = 10'd521;
+    parameter hbp     = 10'd144;
+    parameter hfp     = 10'd784;
+    parameter vbp     = 10'd31;
+    parameter vfp     = 10'd511;
+
+    reg vsenable;
+
+    always @(posedge clk or posedge clr) begin
+        if (clr == 1'b1) begin
+            hc <= 10'd0;
+            vsenable <= 1'b0;
+        end else begin
+            if (hc == hpixels - 1'b1) begin
+                hc <= 10'd0;
+                vsenable <= 1'b1;
+            end else begin
+                hc <= hc + 1'b1;
+                vsenable <= 1'b0;
+            end
+        end
+    end
+
+    always @(posedge clk or posedge clr) begin
+        if (clr == 1'b1) begin
+            vc <= 10'd0;
+        end else if (vsenable == 1'b1) begin
+            if (vc == vlines - 1'b1)
+                vc <= 10'd0;
+            else
+                vc <= vc + 1'b1;
+        end
+    end
+
+    always @(*) begin
+        if (hc < 10'd128)
+            hsync = 1'b0;
+        else
+            hsync = 1'b1;
+    end
+
+    always @(*) begin
+        if (vc < 10'd2)
+            vsync = 1'b0;
+        else
+            vsync = 1'b1;
+    end
+
+    always @(*) begin
+        if ((hc >= hbp) && (hc < hfp) && (vc >= vbp) && (vc < vfp))
+            vidon = 1'b1;
+        else
+            vidon = 1'b0;
+    end
+
+endmodule
