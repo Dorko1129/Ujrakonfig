@@ -20,7 +20,6 @@ module vga_stripes_top (
 
     assign clr = BTNC;
 
-    // 1. Órajelosztó: 100 MHz -> 25 MHz
     clkdiv U1 (
         .clk(CLK100MHZ),
         .clr(clr),
@@ -29,7 +28,6 @@ module vga_stripes_top (
         .clk3()
     );
 
-    // 2. VGA vezérlő és szinkronizáció
     vga_640x480 U2 (
         .clk(clk25),
         .clr(clr),
@@ -40,14 +38,12 @@ module vga_stripes_top (
         .vidon(vidon)
     );
 
-    // 3. PROM memória ("DMH" vagy "INFO" kiválasztása SW[5]-tel)
     prom_DMH U4 (
         .sel(SW[5]),
         .addr(rom_addr4),
         .M(M)
     );
 
-    // 4. Képtartalom megjelenítő (Csíkok + Betűk egyben)
     vga_stripes U3 (
         .vidon(vidon),
         .hc(hc),
