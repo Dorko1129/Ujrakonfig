@@ -1,7 +1,7 @@
 `timescale 1ns / 1ps
 
 module prom_DMH (
-    input  wire        sel,   // 0: "DMH" minta, 1: "INFO" minta
+    input  wire        sel,
     input  wire [3:0]  addr,
     output wire [0:31] M
 );
@@ -10,7 +10,6 @@ module prom_DMH (
     reg [0:31] rom_info [0:15];
     integer i;
 
-    // Eredeti 16x32 minta ("DMH")
     parameter data_dmh = {
         32'b01111110000011000001101000000010,
         32'b01000001000011000001101000000010,
@@ -30,7 +29,6 @@ module prom_DMH (
         32'b01111110000010000000101000000010
     };
 
-    // Új felirat ("INFO")
     parameter data_info = {
         32'b11111100110000101111111001111100,
         32'b00110000111000101100000011000011,
